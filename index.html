@@ -10,7 +10,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230d2a1c'/%3E%3Cpath d='M9 22h14M11 18h10M13 14h6M15 10h2' stroke='%23f6e016' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400..700&family=Libre+Franklin:wght@400..600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@400..600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/system.css">
 <link rel="stylesheet" href="assets/ui/cards.css">
 <link rel="stylesheet" href="assets/motion/motion.css">
@@ -18,26 +18,426 @@
 <link rel="stylesheet" href="assets/icons/icon.css">
 <style>
 :root {
-  --p-bg: #f7f7f7; --p-surface: #ebebeb; --p-ink: #0d2a1c; --p-muted: #5f6b64;
-  --p-accent: #f6e016; --p-accent-ink: #0d2a1c; --p-action: #0d2a1c; --p-action-ink: #f7f7f7;
-  --p-inv-bg: #0d2a1c; --p-inv-surface: #1c3629; --p-inv-ink: #f7f7f7; --p-inv-muted: #97a39c;
-  --p-inv-accent: #f6e016; --p-inv-accent-ink: #0d2a1c; --p-inv-action: #f6e016; --p-inv-action-ink: #0d2a1c;
-  --font-display: "Source Serif 4", Georgia, serif;
-  --font-text: "Libre Franklin", system-ui, sans-serif;
-  --display-weight: 400;
-  --display-tracking: -0.02em;
-  --display-tracking-xl: -0.026em;
+  /* "göl taşı ve pirinç": warm limestone, forest charcoal, brass */
+  --p-bg: #f3efe8; --p-surface: #e7e1d6; --p-ink: #1b201d; --p-muted: #66655d;
+  --p-accent: #a97f4c; --p-accent-ink: #1b201d; --p-action: #1b201d; --p-action-ink: #f3efe8;
+  --p-inv-bg: #1b201d; --p-inv-surface: #262c28; --p-inv-ink: #f3efe8; --p-inv-muted: #aaa79d;
+  --p-inv-accent: #c9a678; --p-inv-accent-ink: #1b201d; --p-inv-action: #c9a678; --p-inv-action-ink: #1b201d;
+  --font-display: "Cormorant Garamond", Garamond, Georgia, serif;
+  --font-text: "Jost", system-ui, sans-serif;
+  --display-weight: 500;
+  --display-tracking: -0.005em;
+  --display-tracking-xl: -0.01em;
 }
 </style>
 <!-- page CSS: only inside visuals, plus the one --p-h per card group and the booking panel -->
 <style>
-  #portfoy .tile { --tile-ratio: 3 / 2; }
   #surec .panel { --p-h: 300px; }
   #surec .panel > img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .booking { background: var(--surface); padding: var(--s-7); border-radius: var(--r-lg); }
   @media (max-width: 639px) { .booking { padding: var(--s-5); } }
-  .services__photo { aspect-ratio: 4 / 5; }
-  @media (min-width: 640px) and (max-width: 1023px) { .services__photo { aspect-ratio: 16 / 10; } #portfoy .tile { --tile-ratio: 16 / 10; } }
+</style>
+<!-- hero: the lake-house film behind the words, full bleed; the bar sits clear over it until you scroll -->
+<style>
+  .hv { position: relative; isolation: isolate; overflow: hidden; background: #1b201d; color: #f3efe8;
+        --ink: #f3efe8; --muted: rgb(243 239 232 / .74); --line: rgb(243 239 232 / .22); --line-strong: rgb(243 239 232 / .5);
+        --action: #c9a678; --action-ink: #1b201d; }
+  main > .hv { padding-top: calc(var(--nav) + var(--hgap)); }
+  .hv__video, .hv__shade { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -2; }
+  .hv__video { object-fit: cover; object-position: 50% 50%; max-width: none; }
+  /* landscape: the film mirrored, so the house on its shore sits right of the words (it is lower left in
+     the footage). Portrait keeps it as shot and holds the house in the middle of the narrow cut. */
+  @media (orientation: landscape) { .hv__video { transform: scaleX(-1); } }
+  /* the words keep 4.5:1 over any frame: dark at the foot and under the bar, the lake open in the middle */
+  .hv__shade { z-index: -1; background:
+      linear-gradient(to bottom, rgb(14 17 15 / .55) 0, rgb(14 17 15 / 0) 22%),
+      linear-gradient(to top, rgb(14 17 15 / .86) 0, rgb(14 17 15 / .55) 38%, rgb(14 17 15 / 0) 70%),
+      linear-gradient(to right, rgb(14 17 15 / .45) 0, rgb(14 17 15 / 0) 60%); }
+
+  /* the kit makes a section's .wrap a flex column: the words drop to the foot, the facts under them */
+  .hv__copy { margin-top: auto; align-self: flex-start; max-width: 640px; }
+  .hv__foot { margin-top: var(--s-8); }
+  .nav__logo { font-weight: 600; font-size: 27px; letter-spacing: .01em; }
+  .hv__kicker { font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .hv__kicker::before { content: ""; display: inline-block; vertical-align: middle; width: 32px; height: 1px; margin-right: var(--s-3); background: #c9a678; }
+  .hv h1 { margin-top: var(--s-5); font: 500 clamp(52px, 6.4vw, 96px)/1.0 var(--font-display); letter-spacing: -0.01em; text-wrap: balance; color: #f3efe8; }
+  .hv h1 em { font-style: normal; color: #e2c9a2; }
+  .hv__lead { margin-top: var(--s-5); max-width: 46ch; font-size: clamp(17px, 1.35vw, 19px); line-height: 1.55; color: rgb(243 239 232 / .86); text-wrap: pretty; }
+  .hv .btn-row { margin-top: var(--s-7); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-4) var(--s-6); }
+  html[data-buttons="arrow"] .hv .btn--secondary { color: #f3efe8; text-decoration-color: rgb(243 239 232 / .5); }
+
+  .hv__foot { display: grid; grid-template-columns: repeat(3, minmax(0, auto)) 1fr auto; align-items: end; gap: var(--s-8);
+              padding-top: var(--s-5); border-top: 1px solid var(--line); }
+  .hv__fact { display: grid; gap: 4px; margin: 0; }
+  .hv__fact dt { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .hv__fact dd { margin: 0; font-size: 16px; font-weight: 500; }
+  .hv__card { grid-column: 5; display: grid; gap: 2px; padding: var(--s-3) var(--s-5) var(--s-3) var(--s-3); border-radius: var(--r-md, 12px);
+              background: rgb(243 239 232 / .1); border: 1px solid rgb(243 239 232 / .2); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+              grid-template-columns: 64px 1fr; column-gap: var(--s-4); align-items: center; transition: background-color var(--dur) var(--ease); }
+  .hv__card:hover { background: rgb(243 239 232 / .18); }
+  .hv__card img { grid-row: span 2; width: 64px; height: 48px; object-fit: cover; border-radius: 6px; }
+  .hv__card small { font-size: 12px; color: var(--muted); }
+  .hv__card b { font-weight: 500; font-size: 15px; }
+  .hv__pause { position: absolute; right: var(--gut); top: calc(var(--nav) + var(--s-5)); width: 40px; height: 40px; border-radius: 50%;
+               display: grid; place-items: center; color: #f3efe8; background: rgb(14 17 15 / .35); border: 1px solid rgb(243 239 232 / .3); cursor: pointer; }
+  .hv__pause:hover { background: rgb(14 17 15 / .55); }
+  .hv__pause svg { width: 14px; height: 14px; }
+  .hv__pause .i-play { display: none; }
+  .hv__pause[aria-pressed="true"] .i-play { display: block; }
+  .hv__pause[aria-pressed="true"] .i-pause { display: none; }
+
+  .hv__fact dd { white-space: nowrap; }
+  @media (max-width: 1279px) {
+    .hv__foot { grid-template-columns: repeat(3, minmax(0, auto)) 1fr; gap: var(--s-7); }
+    .hv__card { display: none; }
+  }
+  @media (max-width: 639px) {
+    main > .hv { padding-top: calc(var(--nav) + var(--s-5)); }
+    .hv__shade { background:
+      linear-gradient(to bottom, rgb(14 17 15 / .5) 0, rgb(14 17 15 / 0) 20%),
+      linear-gradient(to top, rgb(14 17 15 / .9) 0, rgb(14 17 15 / .6) 45%, rgb(14 17 15 / 0) 75%); }
+    .hv h1 { font-size: 46px; line-height: 1; }
+    .hv__lead { font-size: 16px; }
+    .hv .btn-row { margin-top: var(--s-6); }
+    /* the action bar under the screen already holds "Randevu al": the hero keeps the one quiet link */
+    .hv .btn-row .btn--primary { display: none; }
+    .hv__kicker .wide { display: none; }
+    .hv__foot { display: none; }
+  }
+
+  /* the bar: clear over the film, opaque again once the hero has scrolled under it (and whenever the menu is open) */
+  .nav { transition: background-color 240ms var(--ease), border-color 240ms var(--ease), color 240ms var(--ease); }
+  .nav.is-clear:not(.is-open) { background: transparent; border-bottom-color: rgb(243 239 232 / .16); }
+  .nav.is-clear:not(.is-open) :is(.nav__logo, .nav__links > .nav__item > .nav__link, .nav__toggle) { color: #f3efe8; }
+  .nav.is-clear:not(.is-open) .nav__toggle { border-color: rgb(243 239 232 / .4); }
+  .nav.is-clear:not(.is-open) .nav__actions .btn--primary { background: #c9a678; color: #1b201d; }
+  .nav.is-clear:not(.is-open) .mark { background: #c9a678; }
+  @media (max-width: 1023px) {
+    .nav.is-clear:not(.is-open) .nav__actions { display: none; }
+    .nav.is-clear:not(.is-open) .nav__toggle { margin-left: auto; }
+  }
+  /* portrait: the tall cut held from its top, so the house sits above the words */
+  /* shared voice of the redesign: the small brass-ruled eyebrow over every h2, the accent word */
+  .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .eyebrow::before { content: ""; display: inline-block; vertical-align: middle; width: 32px; height: 1px; margin-right: var(--s-3); background: var(--accent); }
+  h2 em { font-style: normal; color: var(--accent); }
+
+  /* a quiet entrance: rises 16px and fades in once, the first time it is seen (never under reduced motion) */
+  @media (prefers-reduced-motion: no-preference) {
+    .js-rv [data-rv] { opacity: 0; transform: translateY(16px); transition: opacity 700ms var(--m-ease, ease), transform 700ms var(--m-ease, ease); transition-delay: var(--rv-delay, 0ms); }
+    .js-rv [data-rv].is-in { opacity: 1; transform: none; }
+  }
+  /* ---------------------------------------------------------------- portföy
+     Grows with its content (no fixed screen count): a head, a bento of three over-photo cards, a row of
+     three cards with their words under the photograph, and a closing line with the one action. */
+  /* the foot is short: the next section brings its own top padding, the two together make one gap */
+  main > section#portfoy { height: auto; min-height: 0; padding-block: clamp(96px, 11vw, 160px) clamp(72px, 8vw, 112px); }
+  main > section#portfoy > .wrap { height: auto; display: block; }
+  .pf__head { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: var(--s-6) var(--gutter); align-items: end; }
+  .pf__intro { grid-column: 2; max-width: 38ch; color: var(--muted); font-size: 17px; line-height: 1.6; padding-bottom: 6px; }
+
+  .pf__feature { margin-top: clamp(48px, 5.5vw, 80px); display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-rows: repeat(2, minmax(0, 1fr));
+                 gap: var(--gutter); height: clamp(560px, 46vw, 680px); }
+  .pf__feature .pcard--lead { grid-row: span 2; }
+  .pf__list { margin-top: clamp(56px, 6vw, 88px); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-8) var(--gutter); }
+
+  .pcard { position: relative; display: flex; flex-direction: column; color: var(--ink); text-decoration: none; isolation: isolate; }
+  .pcard__media { position: relative; overflow: hidden; border-radius: 14px; background: var(--surface); aspect-ratio: 4 / 3; }
+  .pcard__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 1100ms cubic-bezier(.2, .8, .2, 1); }
+  .pcard__body { padding-top: var(--s-5); display: grid; gap: var(--s-2); }
+  .pcard__loc { font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .pcard h3 { font: 500 30px/1.1 var(--font-display); letter-spacing: 0; }
+  .pcard__facts { display: flex; flex-wrap: wrap; gap: 4px 0; font-size: 15px; color: var(--muted); }
+  .pcard__facts span + span::before { content: ""; display: inline-block; width: 3px; height: 3px; border-radius: 50%; background: currentColor; opacity: .55; margin: 0 10px; vertical-align: middle; }
+  .pcard__price { margin-top: var(--s-3); padding-top: var(--s-4); border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between;
+                  font-size: 19px; font-weight: 600; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+  .pcard__go { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--line-strong); transition: background-color 300ms, border-color 300ms, color 300ms; }
+  .pcard__go svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: transform 300ms; }
+  .tag { display: inline-flex; align-items: center; height: 28px; padding: 0 12px; border-radius: 999px; font-size: 12px; font-weight: 600; letter-spacing: .02em;
+         background: rgb(243 239 232 / .9); color: #1b201d; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+  .tag--brass { background: #c9a678; }
+  .pcard__tags { position: absolute; top: var(--s-4); left: var(--s-4); z-index: 2; display: flex; gap: var(--s-2); }
+
+  /* the bento: the words over the photograph's darkened foot, in the hero's light */
+  .pcard--over { overflow: hidden; border-radius: 14px; color: #f3efe8; --muted: rgb(243 239 232 / .76); --line: rgb(243 239 232 / .22); --line-strong: rgb(243 239 232 / .45); }
+  .pcard--over .pcard__media { position: absolute; inset: 0; aspect-ratio: auto; border-radius: 0; }
+  .pcard--over .pcard__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgb(14 17 15 / .82) 0, rgb(14 17 15 / .35) 45%, rgb(14 17 15 / 0) 70%); }
+  .pcard--over .pcard__body { margin-top: auto; position: relative; z-index: 1; padding: var(--s-6); }
+  .pcard--over .pcard__price { border-top-color: var(--line); }
+  .pcard--over:not(.pcard--lead) h3 { font-size: 26px; }
+  /* the small cards give their words more of their height, so the shade climbs higher and darker */
+  .pcard--over:not(.pcard--lead) .pcard__media::after { background: linear-gradient(to top, rgb(14 17 15 / .9) 0, rgb(14 17 15 / .72) 40%, rgb(14 17 15 / .2) 72%, rgb(14 17 15 / 0) 88%); }
+  .pcard--over .pcard__body { text-shadow: 0 1px 12px rgb(14 17 15 / .35); }
+  .pcard--over:not(.pcard--lead) .pcard__price { margin-top: var(--s-2); padding-top: var(--s-3); font-size: 17px; }
+  .pcard--lead .pcard__body { padding: var(--s-8); }
+  .pcard--lead h3 { font-size: clamp(36px, 3.4vw, 52px); }
+  .pcard--lead .pcard__price { font-size: 22px; }
+
+  @media (hover: hover) and (pointer: fine) {
+    .pcard:hover .pcard__media img { transform: scale(1.045); }
+    .pcard:hover .pcard__go { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+    .pcard--over:hover .pcard__go { background: #c9a678; border-color: #c9a678; color: #1b201d; }
+    .pcard:hover .pcard__go svg { transform: translateX(2px); }
+  }
+  .pcard:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 14px; }
+
+
+  @media (max-width: 1023px) {
+    .pf__head { grid-template-columns: minmax(0, 1fr); }
+    .pf__intro { grid-column: 1; }
+    .pf__feature { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: minmax(0, 1.25fr) minmax(0, 1fr); height: clamp(720px, 110vw, 960px); }
+    .pf__feature .pcard--lead { grid-row: auto; grid-column: 1 / -1; }
+    .pf__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .pf__list .pcard:last-child { display: none; }
+    .pcard--lead .pcard__body { padding: var(--s-7); }
+  }
+  @media (max-width: 639px) {
+    main > section#portfoy { padding-block: 88px 96px; }
+    .pf__head h2 { font-size: 42px; }
+    .pf__intro { font-size: 16px; }
+    .pf__feature { display: flex; flex-direction: column; height: auto; margin-top: var(--s-7); }
+    .pf__feature .pcard--over { aspect-ratio: 4 / 5; }
+    .pf__feature .pcard--over:not(.pcard--lead) { aspect-ratio: 4 / 3; }
+    .pcard--lead .pcard__body, .pcard--over .pcard__body { padding: var(--s-5); }
+    .pcard--lead h3 { font-size: 34px; }
+    .pf__list { grid-template-columns: minmax(0, 1fr); gap: var(--s-7); margin-top: var(--s-8); }
+    .pf__list .pcard:last-child { display: flex; }
+  }
+  /* ---------------------------------------------------------------- ev turu (#ilan)
+     The week's house on the dark ground: a head with its particulars, a large photograph that
+     crossfades room to room, and the rooms beside it; the rooms advance by themselves until touched. */
+  main > section#ilan { height: auto; min-height: 0; padding-block: clamp(96px, 10vw, 152px); background: var(--bg); }
+  main > section#ilan > .wrap { height: auto; display: block; }
+  .tour__head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-7) var(--gutter); align-items: end; }
+  .tour__specs { display: flex; gap: 0; margin: 0; padding-bottom: 8px; }
+  .tour__specs > div { display: grid; gap: 6px; padding: 0 var(--s-6); border-left: 1px solid var(--line); }
+  .tour__specs > div:first-child { padding-left: 0; border-left: 0; }
+  .tour__specs > div:last-child { padding-right: 0; }
+  .tour__specs dt { font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  /* figures in the text face: the display serif only has old-style figures */
+  .tour__specs dd { margin: 0; font: 400 22px/1 var(--font-text); letter-spacing: -0.01em; white-space: nowrap; }
+  .tour__price dd { color: var(--accent); }
+
+  .tour__body { margin-top: clamp(48px, 5.5vw, 80px); display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: var(--s-8) clamp(32px, 4.5vw, 72px); align-items: stretch; }
+  .tour__stage { position: relative; overflow: hidden; border-radius: 14px; aspect-ratio: 4 / 3; background: var(--surface); align-self: start; }
+  .tour__stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.04);
+                     transition: opacity 900ms ease, transform 6s ease-out; }
+  .tour__stage img.is-on { opacity: 1; transform: scale(1); }
+  .tour__stage::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, rgb(14 17 15 / .6) 0, rgb(14 17 15 / 0) 30%); }
+  .tour__cap { position: absolute; left: var(--s-6); bottom: var(--s-5); z-index: 1; display: flex; align-items: baseline; gap: var(--s-4); color: #f3efe8; }
+  .tour__count { font-size: 13px; letter-spacing: .1em; color: rgb(243 239 232 / .75); font-variant-numeric: tabular-nums; }
+  .tour__count b { font-weight: 600; color: #f3efe8; }
+  .tour__name { font: 500 26px/1 var(--font-display); }
+
+  .tour__side { display: flex; flex-direction: column; }
+  .tour__rooms { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .tour__rooms li { border-bottom: 1px solid var(--line); }
+  .room { position: relative; width: 100%; display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; align-items: baseline; column-gap: var(--s-3);
+          padding: var(--s-5) 0; background: none; border: 0; color: var(--muted); text-align: left; font: inherit; cursor: pointer; transition: color 300ms; }
+  .room:hover, .room.is-on { color: var(--ink); }
+  .room__n { font-size: 12px; letter-spacing: .1em; font-variant-numeric: tabular-nums; }
+  .room.is-on .room__n { color: var(--accent); }
+  .room__name { font: 500 26px/1.15 var(--font-display); }
+  .room__m { font-size: 15px; font-variant-numeric: tabular-nums; }
+  /* the open room's line: the grid-row trick opens it to its own height */
+  .room__desc { grid-column: 2 / -1; display: grid; grid-template-rows: 0fr; transition: grid-template-rows 500ms ease, margin-top 500ms ease; }
+  .room__desc > span { overflow: hidden; font-size: 16px; line-height: 1.55; color: var(--muted); }
+  .room.is-on .room__desc { grid-template-rows: 1fr; margin-top: var(--s-3); }
+  .room__bar { position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; overflow: hidden; }
+  .room__bar i { display: block; height: 100%; width: 100%; background: var(--accent); transform: scaleX(0); transform-origin: left; }
+  .room.is-on .room__bar i { transform: scaleX(1); }
+  .tour.is-auto .room.is-on .room__bar i { animation: room-fill var(--tour-step, 6s) linear both; }
+  .tour.is-auto.is-held .room.is-on .room__bar i { animation-play-state: paused; }
+  @keyframes room-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  .room:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .tour__cta { margin-top: auto; padding-top: var(--s-7); display: grid; gap: var(--s-4); justify-items: start; }
+  .tour__note { font-size: 14px; color: var(--muted); }
+
+  @media (max-width: 1279px) {
+    .tour__head { grid-template-columns: minmax(0, 1fr); }
+    .tour__specs { flex-wrap: wrap; row-gap: var(--s-5); }
+  }
+  @media (max-width: 1023px) {
+    .tour__body { grid-template-columns: minmax(0, 1fr); }
+    .tour__stage { aspect-ratio: 16 / 10; }
+  }
+  @media (max-width: 639px) {
+    main > section#ilan { padding-block: 88px 96px; }
+    .tour__head h2 { font-size: 42px; }
+    .tour__specs > div { padding: 0 var(--s-4); }
+    .tour__specs .tour__price { flex-basis: 100%; padding-left: 0; border-left: 0; }
+    .tour__specs dd { font-size: 19px; }
+    .tour__body { margin-top: var(--s-7); gap: var(--s-6); }
+    .tour__stage { aspect-ratio: 4 / 3; }
+    .tour__cap { left: var(--s-4); bottom: var(--s-4); }
+    .tour__name { font-size: 22px; }
+    .room__name { font-size: 22px; }
+    .tour__cta .btn { width: 100%; justify-content: center; }
+  }
+  @media (prefers-reduced-motion: reduce) { .tour__stage img { transition: opacity 200ms; transform: none; } }
+
+  /* ---------------------------------------------------------------- sss (#sss)
+     A sand band so it parts from the light services above. The title and the ask card stay put while
+     the questions scroll; one answer open at a time (details[name]), opening smoothly where supported. */
+  main > section#sss { height: auto; min-height: 0; padding-block: clamp(96px, 10vw, 152px); background: var(--p-surface);
+                       --line: color-mix(in oklab, var(--p-ink) 14%, transparent); }
+  main > section#sss > .wrap { height: auto; display: block; }
+  .qa__grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--s-8) clamp(48px, 7vw, 120px); align-items: start; }
+  .qa__side { position: sticky; top: calc(var(--nav) + var(--s-8)); }
+  .qa__side h2 { margin-top: var(--s-5); font: 500 clamp(44px, 5vw, 72px)/1.02 var(--font-display); letter-spacing: -0.01em; }
+  .qa__intro { margin-top: var(--s-5); max-width: 40ch; color: var(--muted); font-size: 17px; line-height: 1.6; }
+  .qa__ask { margin-top: var(--s-7); display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: var(--s-5); row-gap: 4px;
+             padding: var(--s-5) var(--s-5) var(--s-5) var(--s-6); border-radius: 14px; background: var(--p-bg); color: var(--ink); text-decoration: none; max-width: 420px;
+             transition: background-color 300ms; }
+  .qa__ask-k { grid-column: 1; font-size: 13px; color: var(--muted); }
+  .qa__ask-t { grid-column: 1; font: 500 22px/1.2 var(--font-display); }
+  .qa__ask .pcard__go { grid-column: 2; grid-row: 1 / span 2; }
+  @media (hover: hover) and (pointer: fine) {
+    .qa__ask:hover .pcard__go { background: var(--ink); border-color: var(--ink); color: var(--p-bg); }
+    .qa__ask:hover .pcard__go svg { transform: translateX(2px); }
+  }
+
+  .qa__list { border-top: 1px solid var(--line); }
+  .qa__list details { border-bottom: 1px solid var(--line); interpolate-size: allow-keywords; }
+  .qa__list summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: minmax(0, 1fr) 40px; align-items: center; gap: var(--s-5);
+                      padding: var(--s-6) 0; font: 500 clamp(22px, 2vw, 28px)/1.2 var(--font-display); }
+  .qa__list summary::-webkit-details-marker { display: none; }
+  .qa__list summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+  .qa__list summary i { position: relative; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line-strong); transition: background-color 300ms, border-color 300ms, transform 400ms ease; }
+  .qa__list summary i::before, .qa__list summary i::after { content: ""; position: absolute; left: 50%; top: 50%; width: 12px; height: 1.5px; margin: -0.75px 0 0 -6px; background: currentColor; border-radius: 1px; }
+  .qa__list summary i::after { transform: rotate(90deg); }
+  .qa__list details[open] summary i { transform: rotate(45deg); background: var(--ink); border-color: var(--ink); color: var(--p-surface); }
+  @media (hover: hover) and (pointer: fine) { .qa__list summary:hover i { border-color: var(--ink); } }
+  .qa__a p { max-width: 58ch; padding: 0 56px var(--s-6) 0; color: var(--muted); font-size: 17px; line-height: 1.65; }
+  /* smooth open where ::details-content is supported (falls back to an instant open elsewhere) */
+  .qa__list details::details-content { height: 0; overflow: clip; transition: height 450ms ease, content-visibility 450ms allow-discrete; }
+  .qa__list details[open]::details-content { height: auto; }
+
+  @media (max-width: 1023px) {
+    .qa__grid { grid-template-columns: minmax(0, 1fr); }
+    .qa__side { position: static; }
+  }
+  @media (max-width: 639px) {
+    main > section#sss { padding-block: 88px 96px; }
+    .qa__side h2 { font-size: 42px; }
+    .qa__intro { font-size: 16px; }
+    .qa__ask { max-width: none; }
+    .qa__list summary { padding: var(--s-5) 0; font-size: 21px; }
+    .qa__a p { padding-right: 0; font-size: 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .qa__list details::details-content { transition: none; } }
+
+  /* ---------------------------------------------------------------- süreç (#surec)
+     Dark again, and words only (the old step photographs did not show the steps): a brass rail joins
+     three steps, each with its time, its line and what the owner receives. The rail draws once. */
+  main > section#surec { height: auto; min-height: 0; padding-block: clamp(96px, 10vw, 152px); background: var(--bg); }
+  main > section#surec > .wrap { height: auto; display: block; }
+  .proc__head { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: var(--s-6) var(--gutter); align-items: end; }
+  .proc__head h2 { margin-top: var(--s-5); font: 500 clamp(44px, 5vw, 72px)/1.02 var(--font-display); letter-spacing: -0.01em; text-wrap: balance; }
+  .proc__lead { display: grid; gap: var(--s-6); justify-items: start; padding-bottom: 6px; }
+  .proc__lead p { max-width: 38ch; color: var(--muted); font-size: 17px; line-height: 1.6; }
+
+  .proc__track { position: relative; margin-top: clamp(64px, 7vw, 104px); }
+  .proc__rail { position: absolute; left: 0; right: 0; top: 6px; height: 1px; background: var(--accent); transform-origin: left; }
+  .js-rv .proc__rail[data-rv] { opacity: 1; transform: scaleX(0); transition: transform 1600ms cubic-bezier(.65, 0, .35, 1); }
+  .js-rv .proc__rail[data-rv].is-in { transform: scaleX(1); }
+  .proc__steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-8) clamp(32px, 4vw, 64px); }
+  .step { position: relative; display: flex; flex-direction: column; padding-top: var(--s-8); }
+  .step__dot { position: absolute; left: 0; top: 0; width: 13px; height: 13px; border-radius: 50%; background: var(--bg); border: 1px solid var(--accent); }
+  .step__dot::after { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--accent); }
+  .step__meta { display: flex; align-items: center; gap: var(--s-4); }
+  .step__n { font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+  .step__time { display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 500; letter-spacing: .02em;
+                color: var(--ink); border: 1px solid var(--line-strong); }
+  .step h3 { margin-top: var(--s-5); font: 500 clamp(30px, 2.6vw, 38px)/1.1 var(--font-display); }
+  .step__text { margin-top: var(--s-4); color: var(--muted); font-size: 16px; line-height: 1.65; max-width: 36ch; }
+  .step__get { list-style: none; margin: auto 0 0; padding: var(--s-6) 0 0; display: grid; gap: var(--s-3); }
+  .step__get li { display: flex; align-items: center; gap: var(--s-3); padding-top: var(--s-3); border-top: 1px solid var(--line); font-size: 15px; }
+  .step__get li::before { content: ""; width: 14px; height: 14px; flex: none; background: var(--accent);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M2.5 7.5l3 3 6-7' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M2.5 7.5l3 3 6-7' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; }
+
+  @media (max-width: 1023px) {
+    .proc__head { grid-template-columns: minmax(0, 1fr); }
+    /* the rail turns down the left edge and the steps hang from it */
+    .proc__rail { top: 0; bottom: 0; left: 6px; right: auto; width: 1px; height: auto; transform-origin: top; }
+    .js-rv .proc__rail[data-rv] { transform: scaleY(0); }
+    .js-rv .proc__rail[data-rv].is-in { transform: scaleY(1); }
+    .proc__steps { grid-template-columns: minmax(0, 1fr); gap: var(--s-8); }
+    .step { padding: 0 0 0 var(--s-8); }
+    .step__text { max-width: 52ch; }
+    .step__get { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s-5); }
+  }
+  @media (max-width: 639px) {
+    main > section#surec { padding-block: 88px 96px; }
+    .proc__head h2 { font-size: 42px; }
+    .proc__lead p { font-size: 16px; }
+    .proc__lead .btn { width: 100%; justify-content: center; }
+    .proc__track { margin-top: var(--s-8); }
+    .step { padding-left: var(--s-7); }
+    .step h3 { font-size: 28px; }
+    .step__get { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  /* ---------------------------------------------------------------- hizmetler (#hizmetler)
+     Back on the light ground after the tour: a head, the walk-through film as a wide cinema strip,
+     and the four services as numbered columns with their fee at the foot. */
+  main > section#hizmetler { height: auto; min-height: 0; padding-block: clamp(96px, 11vw, 160px) clamp(96px, 10vw, 144px); }
+  main > section#hizmetler > .wrap { height: auto; display: block; }
+  :is(.pf__head, .tour__head, .sv__head) h2 { margin-top: var(--s-5); font: 500 clamp(44px, 5vw, 72px)/1.02 var(--font-display); letter-spacing: -0.01em; text-wrap: balance; }
+  .sv__head { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: var(--s-6) var(--gutter); align-items: end; }
+  .sv__intro { max-width: 38ch; color: var(--muted); font-size: 17px; line-height: 1.6; padding-bottom: 6px; }
+
+  .sv__film { position: relative; margin: clamp(48px, 5.5vw, 80px) 0 0; overflow: hidden; border-radius: 14px; aspect-ratio: 21 / 9; background: #1b201d; }
+  .sv__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .sv__film::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, rgb(14 17 15 / .62) 0, rgb(14 17 15 / 0) 38%); }
+  .sv__cap { position: absolute; left: var(--s-7); bottom: var(--s-6); z-index: 1; display: grid; gap: 6px; color: #f3efe8; max-width: 44ch; }
+  .sv__cap-k { font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: #e2c9a2; }
+  .sv__cap span:last-child { font: 500 24px/1.2 var(--font-display); }
+  .vid-toggle { position: absolute; z-index: 2; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
+                color: #f3efe8; background: rgb(14 17 15 / .35); border: 1px solid rgb(243 239 232 / .3); }
+  .vid-toggle:hover { background: rgb(14 17 15 / .55); }
+  .vid-toggle svg { width: 14px; height: 14px; }
+  .vid-toggle .i-play, .vid-toggle[aria-pressed="true"] .i-pause { display: none; }
+  .vid-toggle[aria-pressed="true"] .i-play { display: block; }
+  .sv__toggle { right: var(--s-6); bottom: var(--s-6); }
+
+  .sv__list { list-style: none; margin: clamp(56px, 6vw, 88px) 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-8) var(--gutter); }
+  .svc { display: flex; flex-direction: column; padding-top: var(--s-5); border-top: 1px solid var(--line-strong); }
+  .svc__n { font-size: 12px; letter-spacing: .1em; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .svc h3 { margin-top: var(--s-5); font: 500 30px/1.1 var(--font-display); }
+  .svc p { margin-top: var(--s-3); color: var(--muted); font-size: 16px; line-height: 1.6; }
+  .svc .svc__fee { margin-top: auto; padding-top: var(--s-6); color: var(--ink); font-size: 18px; font-weight: 500; letter-spacing: -0.01em; }
+  .svc__fee--free { color: var(--accent) !important; }
+
+  @media (max-width: 1023px) {
+    .sv__head { grid-template-columns: minmax(0, 1fr); }
+    .sv__film { aspect-ratio: 16 / 9; }
+    .sv__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 639px) {
+    main > section#hizmetler { padding-block: 88px 96px; }
+    .sv__head h2 { font-size: 42px; }
+    .sv__intro { font-size: 16px; }
+    .sv__film { margin-top: var(--s-7); aspect-ratio: 4 / 5; }
+    .sv__cap { left: var(--s-5); right: 72px; bottom: var(--s-5); }
+    .sv__cap span:last-child { font-size: 20px; }
+    .sv__toggle { right: var(--s-4); bottom: var(--s-5); }
+    .sv__list { grid-template-columns: minmax(0, 1fr); gap: var(--s-7); margin-top: var(--s-8); }
+    .svc h3 { font-size: 28px; margin-top: var(--s-3); }
+    .svc .svc__fee { padding-top: var(--s-4); }
+  }
+
+  /* portrait: the house is in the lower half of the footage, so the words go to the top and the shade with them */
+  @media (orientation: portrait) {
+    .hv__video { object-position: 30% 50%; }
+    .hv__copy { margin-top: 0; }
+    .hv__foot { margin-top: auto; }
+    .hv__shade { background:
+      linear-gradient(to bottom, rgb(14 17 15 / .88) 0, rgb(14 17 15 / .66) 42%, rgb(14 17 15 / 0) 66%),
+      linear-gradient(to top, rgb(14 17 15 / .7) 0, rgb(14 17 15 / 0) 22%) !important; }
+  }
 </style>
 </head>
 <body>
@@ -87,157 +487,277 @@
 </header>
 
 <main id="top">
-  <section class="hero hero--split" aria-labelledby="hero-h">
-    <div class="wrap"><div class="hero-text grid hero__grid">
-      <div class="hero__text span-5">
-        <h1 id="hero-h">Sapanca ve Kartepe'de satılık villa ve göl evleri</h1>
-        <p class="hero__lead">Göl kıyısındaki villaları, bahçeli müstakil evleri ve daireleri tek tek gezip seçiyoruz. Evi görmeden önce tapusu, imar durumu ve ekspertizi hazır.</p>
+  <section class="hero hv" aria-labelledby="hero-h">
+    <video class="hv__video" muted loop playsinline preload="auto" poster="assets/video/hero-poster.webp" aria-hidden="true" tabindex="-1">
+      <source src="assets/video/hero-1440.mp4" type="video/mp4" media="(min-width: 1600px), (min-width: 1100px) and (min-resolution: 1.5dppx)">
+      <source src="assets/video/hero-1080.mp4" type="video/mp4">
+    </video>
+    <div class="hv__shade" aria-hidden="true"></div>
+    <button class="hv__pause" type="button" aria-pressed="false" aria-label="Arka plan videosunu durdur">
+      <svg class="i-pause" viewBox="0 0 14 14" aria-hidden="true"><path d="M4 2.5v9M10 2.5v9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <svg class="i-play" viewBox="0 0 14 14" aria-hidden="true"><path d="M4 2.2v9.6L11.5 7z" fill="currentColor"/></svg>
+    </button>
+    <div class="wrap">
+      <div class="hv__copy">
+        <p class="hv__kicker">Sapanca · Kartepe<span class="wide"> · satılık villa ve göl evleri</span></p>
+        <h1 id="hero-h">Gölün kıyısında, ormanın içinde <em>bir ev.</em></h1>
+        <p class="hv__lead">Göl manzaralı villaları, bahçeli müstakil evleri ve daireleri tek tek gezip seçiyoruz. Siz görmeden önce tapusu, imar durumu ve ekspertizi hazır.</p>
         <div class="btn-row">
           <a class="btn btn--primary" href="#randevu">Randevu al<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
           <a class="btn btn--secondary" href="#portfoy">İlanları gör</a>
         </div>
-        <dl class="hero-facts">
-          <div><dt>Bölge</dt><dd>Sapanca, Kartepe</dd></div>
-          <div><dt>Değerleme</dt><dd>48 saatte, ücretsiz</dd></div>
-          <div><dt>Komisyon</dt><dd>%2 + KDV</dd></div>
+      </div>
+      <div class="hv__foot">
+        <dl class="hv__fact"><dt>Bölge</dt><dd>Sapanca, Kartepe</dd></dl>
+        <dl class="hv__fact"><dt>Değerleme</dt><dd>48 saatte, ücretsiz</dd></dl>
+        <dl class="hv__fact"><dt>Komisyon</dt><dd>%2 + KDV</dd></dl>
+        <a class="hv__card" href="#ilan">
+          <img src="assets/img/salon-800.webp" alt="" width="64" height="48">
+          <small>Haftanın evi · Kırkpınar</small>
+          <b>Göl manzaralı 5+1 villa, 320 m²</b>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section pf" id="portfoy" aria-labelledby="portfoy-h">
+    <div class="wrap">
+      <header class="pf__head" data-rv>
+        <div>
+          <p class="eyebrow">Portföy · 6 ilan</p>
+          <h2 id="portfoy-h">Seçilmiş evler, <em>yerinde görüldü.</em></h2>
+        </div>
+        <p class="pf__intro">Her evi önce biz geziyoruz. Tapu, imar durumu ve ekspertiz raporu hazır olmayan ev bu listeye girmez.</p>
+      </header>
+
+      <div class="pf__feature">
+        <a class="pcard pcard--over pcard--lead" href="#ilan" data-rv>
+          <div class="pcard__media"><img src="assets/img/l1-1600.webp" srcset="assets/img/l1-800.webp 800w, assets/img/l1-1600.webp 1600w" sizes="(min-width: 1024px) 740px, 100vw" alt="Ahşap terası ve göl yönüne bakan havuzu olan modern villa" width="1600" height="1200" loading="lazy" decoding="async"></div>
+          <span class="pcard__tags"><span class="tag tag--brass">Haftanın evi</span><span class="tag">Göl manzaralı</span></span>
+          <div class="pcard__body">
+            <p class="pcard__loc">Kırkpınar · Sapanca</p>
+            <h3>Göl manzaralı villa</h3>
+            <p class="pcard__facts"><span>5+1</span><span>320 m²</span><span>1.200 m² arsa</span><span>Havuzlu</span></p>
+            <p class="pcard__price">₺42.500.000<span class="pcard__go" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M1.5 6h8.5M6.5 2.5 10 6l-3.5 3.5"/></svg></span></p>
+          </div>
+        </a>
+        <a class="pcard pcard--over" href="#randevu" data-ilan="Havuzlu taş villa, Rüstempaşa" data-rv>
+          <div class="pcard__media"><img src="assets/img/l3-800.webp" srcset="assets/img/l3-800.webp 800w, assets/img/l3-1600.webp 1600w" sizes="(min-width: 1024px) 520px, 100vw" alt="Önünde büyük havuz olan iki katlı taş villa" width="800" height="600" loading="lazy" decoding="async"></div>
+          <span class="pcard__tags"><span class="tag">Havuzlu</span></span>
+          <div class="pcard__body">
+            <p class="pcard__loc">Rüstempaşa · Sapanca</p>
+            <h3>Havuzlu taş villa</h3>
+            <p class="pcard__facts"><span>6+2</span><span>410 m²</span></p>
+            <p class="pcard__price">₺56.000.000<span class="pcard__go" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M1.5 6h8.5M6.5 2.5 10 6l-3.5 3.5"/></svg></span></p>
+          </div>
+        </a>
+        <a class="pcard pcard--over" href="#randevu" data-ilan="Havuzlu bahçe evi, Maşukiye" data-rv>
+          <div class="pcard__media"><img src="assets/img/l6-800.webp" srcset="assets/img/l6-800.webp 800w, assets/img/l6-1600.webp 1600w" sizes="(min-width: 1024px) 520px, 100vw" alt="Yeşil bahçe içinde havuzlu ahşap ev" width="800" height="533" loading="lazy" decoding="async"></div>
+          <span class="pcard__tags"><span class="tag">Yeni</span></span>
+          <div class="pcard__body">
+            <p class="pcard__loc">Maşukiye · Kartepe</p>
+            <h3>Havuzlu bahçe evi</h3>
+            <p class="pcard__facts"><span>4+1</span><span>260 m²</span></p>
+            <p class="pcard__price">₺24.300.000<span class="pcard__go" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M1.5 6h8.5M6.5 2.5 10 6l-3.5 3.5"/></svg></span></p>
+          </div>
+        </a>
+      </div>
+
+      <div class="pf__list">
+        <a class="pcard" href="#randevu" data-ilan="Bahçeli müstakil ev, Maşukiye" data-rv>
+          <div class="pcard__media"><img src="assets/img/l2-800.webp" srcset="assets/img/l2-800.webp 800w, assets/img/l2-1600.webp 1600w" sizes="(min-width: 1024px) 410px, 100vw" alt="Önünde peyzajlı bahçesi olan beyaz modern müstakil ev" width="800" height="533" loading="lazy" decoding="async"></div>
+          <div class="pcard__body">
+            <p class="pcard__loc">Maşukiye · Kartepe</p>
+            <h3>Bahçeli müstakil ev</h3>
+            <p class="pcard__facts"><span>4+1</span><span>240 m²</span><span>Bahçeli</span></p>
+            <p class="pcard__price">₺18.750.000<span class="pcard__go" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M1.5 6h8.5M6.5 2.5 10 6l-3.5 3.5"/></svg></span></p>
+          </div>
+        </a>
+        <a class="pcard" href="#randevu" data-ilan="Modern tek katlı ev, Kurtköy" data-rv>
+          <div class="pcard__media"><img src="assets/img/l4-800.webp" srcset="assets/img/l4-800.webp 800w, assets/img/l4-1600.webp 1600w" sizes="(min-width: 1024px) 410px, 100vw" alt="Çimenli bahçe içinde gri tuğla, küp formunda modern ev" width="800" height="533" loading="lazy" decoding="async"></div>
+          <div class="pcard__body">
+            <p class="pcard__loc">Kurtköy · Sapanca</p>
+            <h3>Modern tek katlı ev</h3>
+            <p class="pcard__facts"><span>3+1</span><span>180 m²</span><span>Tek kat</span></p>
+            <p class="pcard__price">₺12.900.000<span class="pcard__go" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M1.5 6h8.5M6.5 2.5 10 6l-3.5 3.5"/></svg></span></p>
+          </div>
+        </a>
+        <a class="pcard" href="#randevu" data-ilan="Balkonlu rezidans daire, Sapanca" data-rv>
+          <div class="pcard__media"><img src="assets/img/l5-800.webp" srcset="assets/img/l5-800.webp 800w, assets/img/l5-1600.webp 1600w" sizes="(min-width: 1024px) 410px, 100vw" alt="Ahşap balkonlu, üç katlı modern konut binası" width="800" height="533" loading="lazy" decoding="async"></div>
+          <div class="pcard__body">
+            <p class="pcard__loc">Sapanca merkez</p>
+            <h3>Balkonlu rezidans daire</h3>
+            <p class="pcard__facts"><span>3+1</span><span>145 m²</span><span>Rezidans</span></p>
+            <p class="pcard__price">₺9.850.000<span class="pcard__go" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M1.5 6h8.5M6.5 2.5 10 6l-3.5 3.5"/></svg></span></p>
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section ground-inverse tour" id="ilan" aria-labelledby="ilan-h">
+    <div class="wrap">
+      <header class="tour__head" data-rv>
+        <div>
+          <p class="eyebrow">Haftanın evi · Kırkpınar, Sapanca</p>
+          <h2 id="ilan-h">Kırkpınar'daki villa, <em>oda oda.</em></h2>
+        </div>
+        <dl class="tour__specs">
+          <div><dt>Oda</dt><dd>5+1</dd></div>
+          <div><dt>Ev</dt><dd>320 m²</dd></div>
+          <div><dt>Arsa</dt><dd>1.200 m²</dd></div>
+          <div><dt>Göle</dt><dd>400 m</dd></div>
+          <div class="tour__price"><dt>Fiyat</dt><dd>₺42.500.000</dd></div>
         </dl>
-      </div>
-      <div class="hero__media span-6 start-7">
-        <picture>
-          <source media="(max-width: 639px)" srcset="assets/img/hero-800.webp">
-          <img src="assets/img/hero-1600.webp" srcset="assets/img/hero-800.webp 800w, assets/img/hero-1600.webp 1600w" sizes="(min-width: 1024px) 628px, 100vw" alt="Havuz başında güneş yatakları olan, geniş camlı modern tek katlı villa" style="--ly-pos: 46% 50%" width="1600" height="900" fetchpriority="high" data-source="library-openverse" data-subject="villa">
-        </picture>
-        <div class="ly-float">
-          <div class="ly-float__row"><span>Bu hafta portföyde</span><span>Kırkpınar</span></div>
-          <div class="ly-float__title">Göl manzaralı 5+1 villa, 320 m²</div>
+      </header>
+
+      <div class="tour__body">
+        <div class="tour__stage" id="tour-stage" data-rv>
+          <img class="is-on" data-room="0" src="assets/img/salon-1600.webp" srcset="assets/img/salon-800.webp 800w, assets/img/salon-1600.webp 1600w" sizes="(min-width: 1024px) 760px, 100vw" alt="Ormana bakan geniş pencereli, şömineli salon" width="1600" height="1071" loading="lazy" decoding="async">
+          <img data-room="1" src="assets/img/mutfak-1600.webp" srcset="assets/img/mutfak-800.webp 800w, assets/img/mutfak-1600.webp 1600w" sizes="(min-width: 1024px) 760px, 100vw" alt="Beyaz tezgahlı adalı açık mutfak" width="1600" height="1066" loading="lazy" decoding="async">
+          <img data-room="2" src="assets/img/yemek-1600.webp" srcset="assets/img/yemek-800.webp 800w, assets/img/yemek-1600.webp 1600w" sizes="(min-width: 1024px) 760px, 100vw" alt="Uzun ahşap masalı, avize ışıklı yemek alanı" width="1600" height="1066" loading="lazy" decoding="async">
+          <img data-room="3" src="assets/img/yatak-1600.webp" srcset="assets/img/yatak-800.webp 800w, assets/img/yatak-1600.webp 1600w" sizes="(min-width: 1024px) 760px, 100vw" alt="Çatı pencereli, beyaz örtülü yatak odası" width="1600" height="1200" loading="lazy" decoding="async">
+          <p class="tour__cap" aria-live="polite"><span class="tour__count"><b>01</b> / 04</span><span class="tour__name">Salon</span></p>
+        </div>
+
+        <div class="tour__side" data-rv>
+          <ol class="tour__rooms">
+            <li><button class="room is-on" type="button" data-room="0" aria-pressed="true" aria-controls="tour-stage"><span class="room__n">01</span><span class="room__name">Salon</span><span class="room__m">64 m²</span><span class="room__desc"><span>Yerden tavana camlar, ormana bakan şömineli oturma alanı.</span></span><span class="room__bar" aria-hidden="true"><i></i></span></button></li>
+            <li><button class="room" type="button" data-room="1" aria-pressed="false" aria-controls="tour-stage"><span class="room__n">02</span><span class="room__name">Mutfak</span><span class="room__m">28 m²</span><span class="room__desc"><span>Adalı açık mutfak, ankastre cihazlar ve kiler.</span></span><span class="room__bar" aria-hidden="true"><i></i></span></button></li>
+            <li><button class="room" type="button" data-room="2" aria-pressed="false" aria-controls="tour-stage"><span class="room__n">03</span><span class="room__name">Yemek alanı</span><span class="room__m">32 m²</span><span class="room__desc"><span>On kişilik masa, terasa açılan sürgülü kapı.</span></span><span class="room__bar" aria-hidden="true"><i></i></span></button></li>
+            <li><button class="room" type="button" data-room="3" aria-pressed="false" aria-controls="tour-stage"><span class="room__n">04</span><span class="room__name">Ebeveyn yatak odası</span><span class="room__m">36 m²</span><span class="room__desc"><span>Çatı pencereli, giyinme odası ve banyosu içinde.</span></span><span class="room__bar" aria-hidden="true"><i></i></span></button></li>
+          </ol>
+          <div class="tour__cta">
+            <a class="btn btn--primary" href="#randevu" data-ilan="Göl manzaralı villa, Kırkpınar">Bu evi yerinde görün<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+            <p class="tour__note">Tapu, imar durumu ve ekspertiz raporu hazır.</p>
+          </div>
         </div>
       </div>
-    </div></div>
+    </div>
   </section>
 
-  <section class="section g2" id="portfoy" aria-labelledby="portfoy-h">
+  <section class="section sv" id="hizmetler" aria-labelledby="hizmetler-h">
     <div class="wrap">
-      <div class="group">
-        <div class="section-head">
-          <h2 id="portfoy-h">Satılık evler. <span class="muted">Her birini yerinde gördük, belgeleri hazır.</span></h2>
+      <header class="sv__head" data-rv>
+        <div>
+          <p class="eyebrow">Hizmetler</p>
+          <h2 id="hizmetler-h">Alırken ve satarken <em>yanınızdayız.</em></h2>
         </div>
-        <div class="grid">
-          <a class="tile span-4" href="#ilan">
-            <div class="tile__media"><img src="assets/img/l1-800.webp" srcset="assets/img/l1-800.webp 800w, assets/img/l1-1600.webp 1600w" sizes="(min-width: 1024px) 410px, 100vw" alt="Ahşap terası ve göl yönüne bakan havuzu olan modern villa" width="800" height="600" loading="lazy" decoding="async" data-source="library-openverse" data-subject="villa"></div>
-            <div class="tile__head"><h3>Göl manzaralı villa</h3><span class="tile__price">₺42.500.000</span></div>
-            <p class="tile__facts">Kırkpınar, Sapanca · 5+1 · 320 m² · havuzlu</p>
-          </a>
-          <a class="tile span-4" href="#randevu">
-            <div class="tile__media"><img src="assets/img/l2-800.webp" srcset="assets/img/l2-800.webp 800w, assets/img/l2-1600.webp 1600w" sizes="(min-width: 1024px) 410px, 100vw" alt="Önünde peyzajlı bahçesi olan beyaz modern müstakil ev" width="800" height="533" loading="lazy" decoding="async" data-source="library-openverse" data-subject="house"></div>
-            <div class="tile__head"><h3>Bahçeli müstakil ev</h3><span class="tile__price">₺18.750.000</span></div>
-            <p class="tile__facts">Maşukiye, Kartepe · 4+1 · 240 m²</p>
-          </a>
-          <a class="tile span-4" href="#randevu">
-            <div class="tile__media"><img src="assets/img/l3-800.webp" srcset="assets/img/l3-800.webp 800w, assets/img/l3-1600.webp 1600w" sizes="(min-width: 1024px) 410px, 100vw" alt="Önünde büyük havuz olan iki katlı taş villa" width="800" height="600" loading="lazy" decoding="async" data-source="library-openverse" data-subject="villa"></div>
-            <div class="tile__head"><h3>Havuzlu taş villa</h3><span class="tile__price">₺56.000.000</span></div>
-            <p class="tile__facts">Rüstempaşa, Sapanca · 6+2 · 410 m²</p>
-          </a>
-        </div>
-      </div>
-      <div class="grid">
-        <a class="tile span-4" href="#randevu">
-          <div class="tile__media"><img src="assets/img/l4-800.webp" srcset="assets/img/l4-800.webp 800w, assets/img/l4-1600.webp 1600w" sizes="(min-width: 1024px) 410px, 100vw" alt="Çimenli bahçe içinde gri tuğla, küp formunda modern ev" width="800" height="533" loading="lazy" decoding="async" data-source="library-openverse" data-subject="house"></div>
-          <div class="tile__head"><h3>Modern tek katlı ev</h3><span class="tile__price">₺12.900.000</span></div>
-          <p class="tile__facts">Kurtköy, Sapanca · 3+1 · 180 m²</p>
-        </a>
-        <a class="tile span-4" href="#randevu">
-          <div class="tile__media"><img src="assets/img/l5-800.webp" srcset="assets/img/l5-800.webp 800w, assets/img/l5-1600.webp 1600w" sizes="(min-width: 1024px) 410px, 100vw" alt="Ahşap balkonlu, üç katlı modern konut binası" width="800" height="533" loading="lazy" decoding="async" data-source="library-openverse" data-subject="apartment"></div>
-          <div class="tile__head"><h3>Balkonlu rezidans daire</h3><span class="tile__price">₺9.850.000</span></div>
-          <p class="tile__facts">Sapanca merkez · 3+1 · 145 m²</p>
-        </a>
-        <a class="tile span-4" href="#randevu">
-          <div class="tile__media"><img src="assets/img/l6-800.webp" srcset="assets/img/l6-800.webp 800w, assets/img/l6-1600.webp 1600w" sizes="(min-width: 1024px) 410px, 100vw" alt="Yeşil bahçe içinde havuzlu ahşap ev" width="800" height="533" loading="lazy" decoding="async" data-source="library-openverse" data-subject="house"></div>
-          <div class="tile__head"><h3>Havuzlu bahçe evi</h3><span class="tile__price">₺24.300.000</span></div>
-          <p class="tile__facts">Maşukiye, Kartepe · 4+1 · 260 m²</p>
-        </a>
-      </div>
+        <p class="sv__intro">Evi bulmaktan tapu gününe kadar tek danışman, tek telefon. Satışa aldığımız her evi böyle çekiyoruz.</p>
+      </header>
+
+      <figure class="sv__film" data-rv>
+        <video class="sv__video" muted loop playsinline preload="none" poster="assets/video/hizmet-poster.webp" aria-label="Lüks bir villanın bahçesinden içine, mutfağına ve havuzlu terasına uzanan drone çekimi">
+          <source src="assets/video/hizmet-1080.mp4" type="video/mp4">
+        </video>
+        <figcaption class="sv__cap"><span class="sv__cap-k">Profesyonel çekim</span><span>Satışa aldığımız her ev için drone ve iç mekan filmi</span></figcaption>
+        <button class="vid-toggle sv__toggle" type="button" aria-pressed="false" aria-label="Videoyu durdur">
+          <svg class="i-pause" viewBox="0 0 14 14" aria-hidden="true"><path d="M4 2.5v9M10 2.5v9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <svg class="i-play" viewBox="0 0 14 14" aria-hidden="true"><path d="M4 2.2v9.6L11.5 7z" fill="currentColor"/></svg>
+        </button>
+      </figure>
+
+      <ol class="sv__list">
+        <li class="svc" data-rv><span class="svc__n">01</span><h3>Satış danışmanlığı</h3><p>Profesyonel fotoğraf ve film, ilan ve alıcı gezileri bizden. Pazarlıktan tapuya kadar yanınızdayız.</p><p class="svc__fee">%2 + KDV</p></li>
+        <li class="svc" data-rv><span class="svc__n">02</span><h3>Alıcı danışmanlığı</h3><p>Bütçenize ve listenize uyan evleri önce biz gezer, eleriz. Size yalnızca görmeye değenler kalır.</p><p class="svc__fee">%2 + KDV</p></li>
+        <li class="svc" data-rv><span class="svc__n">03</span><h3>Kiralama</h3><p>Kiracı bulma, referans kontrolü, sözleşme ve teslim tutanağı; evinizi güvenle kiraya verin.</p><p class="svc__fee">1 kira bedeli</p></li>
+        <li class="svc" data-rv><span class="svc__n">04</span><h3>Değerleme</h3><p>Yerinde inceleme ve bölgedeki satışlarla karşılaştırma; 48 saatte yazılı rapor.</p><p class="svc__fee svc__fee--free">Ücretsiz</p></li>
+      </ol>
     </div>
   </section>
 
-  <section class="section" id="ilan" aria-labelledby="ilan-h">
+  <section class="section qa" id="sss" aria-labelledby="sss-h">
     <div class="wrap">
-      <div class="section-head"><h2 id="ilan-h">Kırkpınar'daki villa, oda oda.</h2><p>5+1, 320 m² ev, 1.200 m² arsa içinde. Salondan göle 400 metre.</p></div>
-      <div class="grid grid--top fill" data-peek>
-        <ul class="rows span-5">
-          <li data-peek-to="salon" tabindex="0"><span class="rows__name">Salon</span><p>Yerden tavana camlar, ormana bakan şömineli oturma alanı.</p><span class="rows__value">64 m²</span></li>
-          <li data-peek-to="mutfak" tabindex="0"><span class="rows__name">Mutfak</span><p>Adalı açık mutfak, ankastre cihazlar ve kiler.</p><span class="rows__value">28 m²</span></li>
-          <li data-peek-to="yemek" tabindex="0"><span class="rows__name">Yemek alanı</span><p>On kişilik masa, terasa açılan sürgülü kapı.</p><span class="rows__value">32 m²</span></li>
-          <li data-peek-to="yatak" tabindex="0"><span class="rows__name">Ebeveyn yatak odası</span><p>Çatı pencereli, giyinme odası ve banyosu içinde.</p><span class="rows__value">36 m²</span></li>
-        </ul>
-        <div class="frame frame--photo frame--fill span-6 start-7">
-          <img class="frame__img" data-peek-for="salon" src="assets/img/salon-1600.webp" alt="Ormana bakan geniş pencereli, şömineli salon" width="1600" height="1071" data-source="library-openverse" data-subject="living room">
-          <img class="frame__img" data-peek-for="mutfak" src="assets/img/mutfak-1600.webp" alt="Beyaz tezgahlı adalı açık mutfak" width="1600" height="1066" hidden data-source="library-openverse" data-subject="kitchen">
-          <img class="frame__img" data-peek-for="yemek" src="assets/img/yemek-1600.webp" alt="Uzun ahşap masalı, avize ışıklı yemek alanı" width="1600" height="1066" hidden data-source="library-openverse" data-subject="dining room">
-          <img class="frame__img" data-peek-for="yatak" src="assets/img/yatak-1600.webp" alt="Çatı pencereli, beyaz örtülü yatak odası" width="1600" height="1200" hidden data-source="library-openverse" data-subject="bedroom">
+      <div class="qa__grid">
+        <div class="qa__side" data-rv>
+          <p class="eyebrow">Sorular</p>
+          <h2 id="sss-h">Sık sorulan <em>sorular.</em></h2>
+          <p class="qa__intro">Ev alırken ya da satarken en çok merak edilenler. Cevabını bulamadığınız soruyu bize yazın, aynı gün dönelim.</p>
+          <a class="qa__ask" href="#randevu">
+            <span class="qa__ask-k">Cevabını bulamadınız mı?</span>
+            <span class="qa__ask-t">Sorunuzu danışmanımıza sorun</span>
+            <span class="pcard__go" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M1.5 6h8.5M6.5 2.5 10 6l-3.5 3.5"/></svg></span>
+          </a>
+        </div>
+
+        <div class="qa__list" data-rv>
+          <details name="sss" open>
+            <summary><span>Komisyonu kim öder?</span><i aria-hidden="true"></i></summary>
+            <div class="qa__a"><p>Alıcı ve satıcı ayrı ayrı %2 + KDV öder. Komisyon yalnızca tapu devri gerçekleştiğinde alınır; ev satılmazsa hiçbir ücret ödemezsiniz.</p></div>
+          </details>
+          <details name="sss">
+            <summary><span>Tapu masrafları ne kadar tutar?</span><i aria-hidden="true"></i></summary>
+            <div class="qa__a"><p>Tapu harcı satış bedelinin %4'üdür; kanunen alıcı ve satıcı %2'şer öder. Buna tapu müdürlüğünün döner sermaye ücreti eklenir. Toplam tutarı randevu öncesinde yazılı olarak çıkarıyoruz.</p></div>
+          </details>
+          <details name="sss">
+            <summary><span>Konut kredisiyle alabilir miyim?</span><i aria-hidden="true"></i></summary>
+            <div class="qa__a"><p>Evet. Portföyümüzdeki evlerin ekspertiz raporu hazır olduğu için banka süreci hızlanır; kredi onayı genellikle bir hafta içinde çıkar.</p></div>
+          </details>
+          <details name="sss">
+            <summary><span>Yabancı uyruklu alıcılar ev alabilir mi?</span><i aria-hidden="true"></i></summary>
+            <div class="qa__a"><p>Genel olarak evet. Bazı parsellerde askeri ve güvenlik bölgesi kısıtlamaları olabildiği için her evi tapuya başvurmadan önce kontrol ediyoruz. Tapu ve oturma izni süreçlerinde yanınızdayız.</p></div>
+          </details>
+          <details name="sss">
+            <summary><span>Hafta sonu ev gezebilir miyim?</span><i aria-hidden="true"></i></summary>
+            <div class="qa__a"><p>Evet. Randevular hafta sonu dahil her gün 09:30 ile 19:00 arasında. Gezilere danışmanınız eşlik eder.</p></div>
+          </details>
+          <details name="sss">
+            <summary><span>Değerleme gerçekten ücretsiz mi?</span><i aria-hidden="true"></i></summary>
+            <div class="qa__a"><p>Evet. Evi bize satışa vermeseniz de 48 saatte hazırladığımız yazılı rapor sizde kalır.</p></div>
+          </details>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section ground-inverse" id="hizmetler" aria-labelledby="hizmetler-h">
-    <div class="wrap grid grid--top">
-      <div class="span-5">
-        <div class="section-head">
-          <h2 id="hizmetler-h">Alırken ve satarken yanınızdayız.</h2>
-          <p>Evi bulmaktan tapu gününe kadar tek danışman, tek telefon.</p>
-        </div>
-        <ul class="rows">
-          <li><span class="rows__name">Satış danışmanlığı</span><p>Fotoğraf, ilan ve alıcı gezileri bizden.</p><span class="rows__value">%2 + KDV</span></li>
-          <li><span class="rows__name">Alıcı danışmanlığı</span><p>Bütçenize uyan evleri gezip eleriz.</p><span class="rows__value">%2 + KDV</span></li>
-          <li><span class="rows__name">Kiralama</span><p>Kiracı bulma, sözleşme ve teslim tutanağı.</p><span class="rows__value">1 kira bedeli</span></li>
-          <li><span class="rows__name">Değerleme</span><p>Yerinde inceleme, 48 saatte yazılı rapor.</p><span class="rows__value">Ücretsiz</span></li>
-        </ul>
-      </div>
-      <div class="frame frame--photo services__photo span-6 start-7">
-        <img class="frame__img" src="assets/img/hizmet-1600.webp" srcset="assets/img/hizmet-800.webp 800w, assets/img/hizmet-1600.webp 1600w" sizes="(min-width: 1024px) 628px, 100vw" alt="Akşam ışıklarında havuzu ve terası aydınlatılmış villa" width="1600" height="1067" loading="lazy" decoding="async" data-source="library-openverse" data-subject="villa at night">
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="sss" aria-labelledby="sss-h">
-    <div class="wrap grid grid--top">
-      <div class="span-5 stack-4">
-        <h2 id="sss-h">Sık sorulan sorular</h2>
-        <p class="muted">Cevabını bulamadığınız soruyu randevu formuna yazın.</p>
-        <a class="link" href="#randevu">Soru gönder</a>
-      </div>
-      <div class="faq span-6 start-7">
-        <div class="faq__item"><h3>Komisyonu kim öder?</h3><p>Alıcı ve satıcı ayrı ayrı %2 + KDV öder. Ev satılmazsa hiçbir ücret alınmaz.</p></div>
-        <div class="faq__item"><h3>Evleri yabancılar alabilir mi?</h3><p>Evet. Sapanca ve Kartepe'de yabancıya satış serbest; tapu ve vatandaşlık başvurusunda yanınızdayız.</p></div>
-        <div class="faq__item"><h3>Konut kredisiyle alabilir miyim?</h3><p>Evet. Ekspertiz raporu hazır olduğu için kredi onayı genellikle bir haftada çıkar.</p></div>
-        <div class="faq__item"><h3>Hafta sonu ev gezebilir miyim?</h3><p>Evet. Randevular her gün 09:30 ile 19:00 arasında, hafta sonu dahil.</p></div>
-        <div class="faq__item"><h3>Değerleme gerçekten ücretsiz mi?</h3><p>Evet. Evi bize satışa vermeseniz de yazılı raporu sizde kalır.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="surec" aria-labelledby="surec-h">
+  <section class="section ground-inverse proc" id="surec" aria-labelledby="surec-h">
     <div class="wrap">
-      <div class="section-head"><h2 id="surec-h">Evinizi 3 adımda satıyoruz.</h2><p>Değerlemeden tapu gününe kadar her adımı biz yürütürüz.</p></div>
-      <div class="grid">
-        <article class="card card--row card--open span-4">
-          <span class="step-num">1</span>
-          <h3>Evinizi yerinde görürüz</h3>
-          <p>Bir danışmanımız gelir, 48 saatte yazılı değer raporu verir.</p>
-          <div class="panel"><img src="assets/img/s1-800.webp" alt="Renkli koltuklu, geniş ve aydınlık salon" width="800" height="524" loading="lazy" decoding="async" data-source="library-openverse" data-subject="living room"></div>
-        </article>
-        <article class="card card--row card--open span-4">
-          <span class="step-num">2</span>
-          <h3>Fotoğraf ve ilan hazırlarız</h3>
-          <p>Profesyonel çekim yapılır, ilan dört büyük sitede yayına girer.</p>
-          <div class="panel"><img src="assets/img/s2-800.webp" alt="Bahçeye açılan cam duvarlı, sade döşenmiş oturma odası" width="800" height="568" loading="lazy" decoding="async" data-source="library-openverse" data-subject="living room"></div>
-        </article>
-        <article class="card card--row card--open span-4">
-          <span class="step-num">3</span>
-          <h3>Alıcıyla tapuya gideriz</h3>
-          <p>Gezileri, pazarlığı ve tapu randevusunu biz ayarlarız.</p>
-          <div class="panel"><img src="assets/img/s3-800.webp" alt="Koyu panelli modern bir evin cephesi ve gökyüzü" width="800" height="534" loading="lazy" decoding="async" data-source="library-openverse" data-subject="house facade"></div>
-        </article>
+      <header class="proc__head" data-rv>
+        <div>
+          <p class="eyebrow">Satış süreci</p>
+          <h2 id="surec-h">Evinizi <em>üç adımda</em> satıyoruz.</h2>
+        </div>
+        <div class="proc__lead">
+          <p>Değerlemeden tapu gününe kadar her adımı biz yürütürüz. Ev satılmazsa hiçbir ücret ödemezsiniz.</p>
+          <a class="btn btn--primary" href="#randevu" data-konu="Ücretsiz değerleme istiyorum">Ücretsiz değerleme isteyin<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+        </div>
+      </header>
+
+      <div class="proc__track">
+        <span class="proc__rail" aria-hidden="true" data-rv></span>
+        <ol class="proc__steps">
+          <li class="step" data-rv>
+            <span class="step__dot" aria-hidden="true"></span>
+            <p class="step__meta"><span class="step__n">Adım 1</span><span class="step__time">48 saat</span></p>
+            <h3>Evinizi yerinde görürüz</h3>
+            <p class="step__text">Bir danışmanımız evinizi gezer, tapu ve imar durumunu inceler, bölgedeki son satışlarla karşılaştırır.</p>
+            <ul class="step__get" aria-label="Size teslim ettiklerimiz">
+              <li>Yazılı değer raporu</li>
+              <li>Önerilen satış fiyatı</li>
+            </ul>
+          </li>
+          <li class="step" data-rv>
+            <span class="step__dot" aria-hidden="true"></span>
+            <p class="step__meta"><span class="step__n">Adım 2</span><span class="step__time">1 hafta</span></p>
+            <h3>Çeker, ilana çıkarız</h3>
+            <p class="step__text">Profesyonel fotoğraf ve drone filmi çekilir. İlan dört büyük sitede ve kendi alıcı listemizde yayına girer.</p>
+            <ul class="step__get" aria-label="Size teslim ettiklerimiz">
+              <li>Fotoğraf ve film</li>
+              <li>Haftalık ilgi raporu</li>
+            </ul>
+          </li>
+          <li class="step" data-rv>
+            <span class="step__dot" aria-hidden="true"></span>
+            <p class="step__meta"><span class="step__n">Adım 3</span><span class="step__time">Satışa kadar</span></p>
+            <h3>Alıcıyla tapuya gideriz</h3>
+            <p class="step__text">Gezileri, pazarlığı ve kaparo sözleşmesini biz yürütürüz; tapu randevusunu alır, devir günü yanınızda oluruz.</p>
+            <ul class="step__get" aria-label="Size teslim ettiklerimiz">
+              <li>Kaparo sözleşmesi</li>
+              <li>Tapu devri</li>
+            </ul>
+          </li>
+        </ol>
       </div>
     </div>
   </section>
@@ -307,5 +827,106 @@
 <script type="module" src="assets/system.js"></script>
 <script type="module" src="assets/motion/motion.js"></script>
 <script type="module" src="assets/layout/layout.js"></script>
+<script>
+/* hero film: plays unless the visitor asked for less motion; the button stops and starts it.
+   The bar stays clear over the hero and turns opaque once the hero has passed under it. */
+(() => {
+  const hero = document.querySelector('.hv'), video = hero && hero.querySelector('.hv__video'), btn = hero && hero.querySelector('.hv__pause');
+  const nav = document.querySelector('.nav');
+  if (!hero) return;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const setPaused = paused => { btn.setAttribute('aria-pressed', String(paused)); btn.setAttribute('aria-label', paused ? 'Arka plan videosunu oynat' : 'Arka plan videosunu durdur'); };
+  let stopped = reduce.matches;   // the visitor's choice (or their reduced-motion setting)
+  const play = () => video.play().then(() => setPaused(false)).catch(() => setPaused(true));
+  if (stopped) setPaused(true); else play();
+  btn.addEventListener('click', () => {
+    stopped = !stopped;
+    if (stopped) { video.pause(); setPaused(true); } else play();
+  });
+  // no film off screen: pause while the hero is out of view, resume unless the visitor stopped it
+  new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting) video.pause(); else if (!stopped) video.play().catch(() => {});
+  }).observe(hero);
+  if (nav) {
+    const sync = () => nav.classList.toggle('is-clear', hero.getBoundingClientRect().bottom > nav.offsetHeight);
+    sync(); addEventListener('scroll', sync, { passive: true });
+  }
+})();
+
+/* entrances: each [data-rv] rises in once when it is first seen; siblings in one row follow 90ms apart */
+(() => {
+  if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.documentElement.classList.add('js-rv');
+  const items = [...document.querySelectorAll('[data-rv]')];
+  items.forEach(el => {
+    const sibs = [...el.parentElement.children].filter(c => c.hasAttribute('data-rv'));
+    el.style.setProperty('--rv-delay', (sibs.indexOf(el) * 90) + 'ms');
+  });
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }),
+    { rootMargin: '0px 0px -8% 0px' });
+  items.forEach(el => io.observe(el));
+})();
+
+/* the house tour: a room button shows its photograph. While nobody has touched it, it moves on by itself
+   when the active room's brass line fills (6s); hovering or focusing it holds the line, a tap or a key
+   stops the moving for good, and it never moves under reduced motion or off screen. */
+(() => {
+  const tour = document.querySelector('.tour');
+  if (!tour) return;
+  const rooms = [...tour.querySelectorAll('.room')], imgs = [...tour.querySelectorAll('.tour__stage img')];
+  const count = tour.querySelector('.tour__count b'), name = tour.querySelector('.tour__name');
+  let at = 0;
+  const show = i => {
+    at = (i + rooms.length) % rooms.length;
+    rooms.forEach((r, k) => { r.classList.toggle('is-on', k === at); r.setAttribute('aria-pressed', String(k === at)); });
+    imgs.forEach((im, k) => im.classList.toggle('is-on', k === at));
+    count.textContent = String(at + 1).padStart(2, '0');
+    name.textContent = rooms[at].querySelector('.room__name').textContent;
+  };
+  rooms.forEach((r, i) => r.addEventListener('click', () => { tour.classList.remove('is-auto'); show(i); }));
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  tour.classList.add('is-auto', 'is-held');
+  tour.addEventListener('animationend', e => { if (e.animationName === 'room-fill' && tour.classList.contains('is-auto')) show(at + 1); });
+  const body = tour.querySelector('.tour__body');
+  let hover = false, seen = false;
+  const hold = () => tour.classList.toggle('is-held', hover || !seen);
+  body.addEventListener('pointerenter', () => { hover = true; hold(); });
+  body.addEventListener('pointerleave', () => { hover = false; hold(); });
+  new IntersectionObserver(([e]) => { seen = e.isIntersecting; hold(); }, { threshold: 0.35 }).observe(body);
+})();
+
+/* section films (not the hero): load and play only while on screen, never under reduced motion; the
+   round button stops and starts it, and a stopped film stays stopped */
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('.sv__film').forEach(box => {
+    const video = box.querySelector('video'), btn = box.querySelector('.vid-toggle');
+    let stopped = reduce;
+    const mark = paused => { btn.setAttribute('aria-pressed', String(paused)); btn.setAttribute('aria-label', paused ? 'Videoyu oynat' : 'Videoyu durdur'); };
+    mark(stopped);
+    btn.addEventListener('click', () => { stopped = !stopped; if (stopped) { video.pause(); mark(true); } else video.play().then(() => mark(false)).catch(() => mark(true)); });
+    new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) { video.pause(); return; }
+      if (!stopped) video.play().then(() => mark(false)).catch(() => mark(true));
+    }, { rootMargin: '200px 0px' }).observe(box);
+  });
+})();
+
+/* a listing card that leads to the booking form picks that listing in "Hangi ev?" */
+/* ...and a link with data-konu picks the reason in "Ne için geliyorsunuz?" */
+document.addEventListener('click', e => {
+  const pick = (attr, name) => {
+    const el = e.target.closest(`[${attr}]`), select = document.querySelector(`#randevu select[name="${name}"]`);
+    if (!el || !select) return;
+    const opt = [...select.options].find(o => o.text === el.getAttribute(attr));
+    if (opt) select.value = opt.value;
+  };
+  pick('data-ilan', 'ilan');
+  pick('data-konu', 'konu');
+  // a listing means buying, unless the link says otherwise
+  const card = e.target.closest('[data-ilan]:not([data-konu])'), konu = document.querySelector('#randevu select[name="konu"]');
+  if (card && konu) konu.selectedIndex = 0;
+});
+</script>
 </body>
 </html>
